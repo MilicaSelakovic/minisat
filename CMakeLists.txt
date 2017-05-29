@@ -88,34 +88,37 @@ install(DIRECTORY minisat/mtl minisat/utils minisat/core minisat/simp
         FILES_MATCHING PATTERN "*.h")
 
 
-
-find_program(
-        GIT_EXECUTABLE
-        NAMES git
-        DOC "git command line client"
-)
-mark_as_advanced(GIT_EXECUTABLE)
-
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Git DEFAULT_MSG GIT_EXECUTABLE)
+#--------------------------------------------------------------------------------------------------
+# Google test:
 
 
-
-find_package(Git)
-
-if(GIT_FOUND)
-  execute_process(
-          COMMAND ${GIT_EXECUTABLE} rev-list --max-count=1 HEAD
-          OUTPUT_VARIABLE GIT_REVISION
-          ERROR_QUIET
-  )
-  if(NOT ${GIT_REVISION} STREQUAL "")
-    string(STRIP ${GIT_REVISION} GIT_REVISION)
-  endif()
-  message(STATUS "Current git revision is ${GIT_REVISION}")
-else()
-  set(GIT_REVISION "unknown")
-endif()
+#find_program(
+#        GIT_EXECUTABLE
+#        NAMES git
+#        DOC "git command line client"
+#)
+#mark_as_advanced(GIT_EXECUTABLE)
+#
+#include(FindPackageHandleStandardArgs)
+#find_package_handle_standard_args(Git DEFAULT_MSG GIT_EXECUTABLE)
+#
+#
+#
+#find_package(Git)
+#
+#if(GIT_FOUND)
+#  execute_process(
+#          COMMAND ${GIT_EXECUTABLE} rev-list --max-count=1 HEAD
+#          OUTPUT_VARIABLE GIT_REVISION
+#          ERROR_QUIET
+#  )
+#  if(NOT ${GIT_REVISION} STREQUAL "")
+#    string(STRIP ${GIT_REVISION} GIT_REVISION)
+#  endif()
+#  message(STATUS "Current git revision is ${GIT_REVISION}")
+#else()
+#  set(GIT_REVISION "unknown")
+#endif()
 
 
 
@@ -156,7 +159,7 @@ add_custom_target(
 # update git submodules before building google test
 add_dependencies(googletest update_submodules)
 
-add_executable(runSimpleTests minisat/test/tests/simple_test.cpp)
+add_executable(runSimpleTests minisat/test/simple_test.cpp)
 target_link_libraries(runSimpleTests googletest)
 if(STATIC_BINARIES)
   target_link_libraries(runSimpleTests minisat-lib-static)
