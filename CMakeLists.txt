@@ -92,37 +92,6 @@ install(DIRECTORY minisat/mtl minisat/utils minisat/core minisat/simp
 # Google test:
 
 
-#find_program(
-#        GIT_EXECUTABLE
-#        NAMES git
-#        DOC "git command line client"
-#)
-#mark_as_advanced(GIT_EXECUTABLE)
-#
-#include(FindPackageHandleStandardArgs)
-#find_package_handle_standard_args(Git DEFAULT_MSG GIT_EXECUTABLE)
-#
-#
-#
-#find_package(Git)
-#
-#if(GIT_FOUND)
-#  execute_process(
-#          COMMAND ${GIT_EXECUTABLE} rev-list --max-count=1 HEAD
-#          OUTPUT_VARIABLE GIT_REVISION
-#          ERROR_QUIET
-#  )
-#  if(NOT ${GIT_REVISION} STREQUAL "")
-#    string(STRIP ${GIT_REVISION} GIT_REVISION)
-#  endif()
-#  message(STATUS "Current git revision is ${GIT_REVISION}")
-#else()
-#  set(GIT_REVISION "unknown")
-#endif()
-
-
-
-
 set(GOOGLETEST_ROOT external/googletest/googletest CACHE STRING "Google Test source root")
 
 message(STATUS "GOOGLETEST_ROOT set to ${GOOGLETEST_ROOT}")
@@ -145,8 +114,6 @@ foreach(_source ${GOOGLETEST_SOURCES})
 endforeach()
 
 add_library(googletest ${GOOGLETEST_SOURCES})
-
-
 
 # target to update git submodules
 add_custom_target(
