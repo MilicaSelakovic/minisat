@@ -87,11 +87,77 @@ install(DIRECTORY minisat/mtl minisat/utils minisat/core minisat/simp
         DESTINATION include/minisat
         FILES_MATCHING PATTERN "*.h")
 
-add_subdirectory(minisat/test/lib/googletest)
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+
+find_program(
+        GIT_EXECUTABLE
+        NAMES git
+        DOC "git command line client"
+)
+mark_as_advanced(GIT_EXECUTABLE)
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Git DEFAULT_MSG GIT_EXECUTABLE)
+
+
+
+find_package(Git)
+
+if(GIT_FOUND)
+  execute_process(
+          COMMAND ${GIT_EXECUTABLE} rev-list --max-count=1 HEAD
+          OUTPUT_VARIABLE GIT_REVISION
+          ERROR_QUIET
+  )
+  if(NOT ${GIT_REVISION} STREQUAL "")
+    string(STRIP ${GIT_REVISION} GIT_REVISION)
+  endif()
+  message(STATUS "Current git revision is ${GIT_REVISION}")
+else()
+  set(GIT_REVISION "unknown")
+endif()
+
+
+
+
+set(GOOGLETEST_ROOT external/googletest/googletest CACHE STRING "Google Test source root")
+
+message(STATUS "GOOGLETEST_ROOT set to ${GOOGLETEST_ROOT}")
+
+# google test includes
+include_directories(
+        ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}
+        ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}/include
+)
+
+# google test sources
+set(GOOGLETEST_SOURCES
+        ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}/src/gtest-all.cc
+        ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}/src/gtest_main.cc
+        )
+
+# mark these files as generated (they may not be present at configure time)
+foreach(_source ${GOOGLETEST_SOURCES})
+  set_source_files_properties(${_source} PROPERTIES GENERATED 1)
+endforeach()
+
+add_library(googletest ${GOOGLETEST_SOURCES})
+
+
+
+# target to update git submodules
+add_custom_target(
+        update_submodules
+        COMMAND git submodule init
+        COMMAND git submodule update
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+# update git submodules before building google test
+add_dependencies(googletest update_submodules)
 
 add_executable(runSimpleTests minisat/test/tests/simple_test.cpp)
-target_link_libraries(runSimpleTests gtest gtest_main)
+target_link_libraries(runSimpleTests googletest)
 if(STATIC_BINARIES)
   target_link_libraries(runSimpleTests minisat-lib-static)
 else()
