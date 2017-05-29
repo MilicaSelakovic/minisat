@@ -161,6 +161,7 @@ add_dependencies(googletest update_submodules)
 
 add_executable(runSimpleTests minisat/test/simple_test.cpp)
 target_link_libraries(runSimpleTests googletest)
+add_dependencies(runSimpleTests googletest)
 if(STATIC_BINARIES)
   target_link_libraries(runSimpleTests minisat-lib-static)
 else()
