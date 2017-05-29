@@ -5,6 +5,8 @@ project(minisat)
 
 #--------------------------------------------------------------------------------------------------
 # Configurable options:
+#include(CTest)
+enable_testing()
 
 option(STATIC_BINARIES "Link binaries statically." ON)
 option(USE_SORELEASE   "Use SORELEASE in shared library filename." ON)
@@ -54,6 +56,8 @@ target_link_libraries(minisat-lib-static ${ZLIB_LIBRARY})
 add_executable(minisat_core minisat/core/Main.cc)
 add_executable(minisat_simp minisat/simp/Main.cc)
 
+add_test(test1 echo --help)
+
 if(STATIC_BINARIES)
   target_link_libraries(minisat_core minisat-lib-static)
   target_link_libraries(minisat_simp minisat-lib-static)
@@ -82,3 +86,14 @@ install(TARGETS minisat-lib-static minisat-lib-shared minisat_core minisat_simp
 install(DIRECTORY minisat/mtl minisat/utils minisat/core minisat/simp
         DESTINATION include/minisat
         FILES_MATCHING PATTERN "*.h")
+
+add_subdirectory(minisat/test/lib/googletest)
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+add_executable(runSimpleTests minisat/test/tests/simple_test.cpp)
+target_link_libraries(runSimpleTests gtest gtest_main)
+if(STATIC_BINARIES)
+  target_link_libraries(runSimpleTests minisat-lib-static)
+else()
+  target_link_libraries(runSimpleTests minisat-lib-shared)
+endif()
