@@ -126,7 +126,7 @@ add_custom_target(
 # update git submodules before building google test
 add_dependencies(googletest update_submodules)
 
-add_executable(runSimpleTests minisat/test/simple_test.cpp)
+add_executable(runSimpleTests minisat/test/refactor_test.cpp)
 target_link_libraries(runSimpleTests googletest)
 add_dependencies(runSimpleTests googletest)
 if(STATIC_BINARIES)
