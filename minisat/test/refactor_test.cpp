@@ -24,12 +24,12 @@ protected:
         parse_DIMACS(in, S);
 
 #ifdef UPDATE_ANSWERS
-        std::ofstream answers((samplesPath + fileName + answersExtension));
+        std::ofstream answers((samplesPath + fileName + answersExtension).c_str());
         if(!answers.is_open()){
             FAIL() << "Error creating answers file";
         }
 #else
-            std::ifstream answers((samplesPath + fileName + answersExtension));
+            std::ifstream answers((samplesPath + fileName + answersExtension).c_str());
         if(!answers.is_open()){
             FAIL() << "Error reading answers file";
         }

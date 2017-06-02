@@ -11,6 +11,8 @@ enable_testing()
 option(STATIC_BINARIES "Link binaries statically." ON)
 option(USE_SORELEASE   "Use SORELEASE in shared library filename." ON)
 
+SET(GCC_COVERAGE_COMPILE_FLAGS "-lpthread -pthread")
+SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
 #--------------------------------------------------------------------------------------------------
 # Library version:
 
@@ -55,8 +57,6 @@ target_link_libraries(minisat-lib-static ${ZLIB_LIBRARY})
 
 add_executable(minisat_core minisat/core/Main.cc)
 add_executable(minisat_simp minisat/simp/Main.cc)
-
-add_test(test1 echo --help)
 
 if(STATIC_BINARIES)
   target_link_libraries(minisat_core minisat-lib-static)
@@ -126,11 +126,11 @@ add_custom_target(
 # update git submodules before building google test
 add_dependencies(googletest update_submodules)
 
-add_executable(runSimpleTests minisat/test/refactor_test.cpp)
-target_link_libraries(runSimpleTests googletest)
-add_dependencies(runSimpleTests googletest)
+add_executable(runRefactorTests minisat/test/refactor_test.cpp)
+target_link_libraries(runRefactorTests googletest)
+add_dependencies(runRefactorTests googletest)
 if(STATIC_BINARIES)
-  target_link_libraries(runSimpleTests minisat-lib-static)
+  target_link_libraries(runRefactorTests minisat-lib-static)
 else()
-  target_link_libraries(runSimpleTests minisat-lib-shared)
+  target_link_libraries(runRefactorTests minisat-lib-shared)
 endif()
