@@ -28,6 +28,7 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #include "minisat/utils/Options.h"
 #include "minisat/core/SolverTypes.h"
 #include "minisat/core/SolverListener.h"
+#include "minisat/core/SolverStatistics.h"
 
 
 namespace Minisat {
@@ -130,12 +131,16 @@ public:
     void applyAssert        () const;
     void applyPropagate     () const;
     void applyBacktrack     () const;
-    void applyConflict() const;
+    void applyConflict      () const;
     void applyExplain       () const;
     void applyLearn         () const;
     void applyForget        () const;
     void applyForgetClause  () const;
     void applyRestart       () const;
+
+    // Solver statistics:
+    //
+    SolverStatistics* statistics;
 
     // Extra results: (read-only member variable)
     //

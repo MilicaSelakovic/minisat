@@ -101,6 +101,10 @@ Solver::Solver() :
   , conflict_budget    (-1)
   , propagation_budget (-1)
   , asynch_interrupt   (false)
+
+    // Resource constraints:
+    //
+  , statistics         (new SolverStatistics(*this))
 {}
 
 

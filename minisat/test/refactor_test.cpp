@@ -49,10 +49,10 @@ protected:
         answers << S.propagations << std::endl;
         answers << S.tot_literals << std::endl;
 #else
-        ASSERT_EQ(expected_starts, S.starts);
-        ASSERT_EQ(expected_conflicts, S.conflicts);
-        ASSERT_EQ(expected_decisions, S.decisions);
-        ASSERT_EQ(expected_propagations, S.propagations);
+        ASSERT_EQ(expected_starts, S.statistics->getNumberOfRestarts());
+        ASSERT_EQ(expected_conflicts, S.statistics->getNumberOfConflicts());
+        ASSERT_EQ(expected_decisions, S.statistics->getNumberOfDecisions());
+        ASSERT_EQ(expected_propagations, S.statistics->getNumberOfPropagations());
         ASSERT_EQ(expected_tot_literals, S.tot_literals);
 #endif
     }
