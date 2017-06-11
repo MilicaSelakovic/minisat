@@ -1003,6 +1003,28 @@ void Solver::printStats() const
 
 
 //=================================================================================================
+// Solver listeners methods:
+
+
+void Solver::addListener(SolverListener* listener)
+{
+    listeners.push(listener);
+}
+
+void Solver::removeListener(SolverListener* listener)
+{
+    for(int i=0; i<listeners.size(); i++){
+        if(listeners[i] == listener){
+            SolverListener* tmp = listeners[i];
+            listeners[i] = listeners[listeners.size() - 1];
+            listeners[listeners.size() - 1] = tmp;
+            listeners.pop();
+            return;
+        }
+    }
+}
+
+//=================================================================================================
 // Garbage Collection methods:
 
 void Solver::relocAll(ClauseAllocator& to)

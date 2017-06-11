@@ -27,6 +27,7 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #include "minisat/mtl/IntMap.h"
 #include "minisat/utils/Options.h"
 #include "minisat/core/SolverTypes.h"
+#include "minisat/core/SolverListener.h"
 
 
 namespace Minisat {
@@ -116,6 +117,12 @@ public:
     virtual void garbageCollect();
     void    checkGarbage(double gf);
     void    checkGarbage();
+
+    // Solver listeners:
+    //
+    void addListener    (SolverListener* listener);
+    void removeListener (SolverListener* listener);
+    vec<SolverListener*> listeners;
 
     // Extra results: (read-only member variable)
     //
