@@ -130,7 +130,7 @@ public:
     void applyAssert        () const;
     void applyPropagate     () const;
     void applyBacktrack     () const;
-    void applyCapplyflict   () const;
+    void applyConflict() const;
     void applyExplain       () const;
     void applyLearn         () const;
     void applyForget        () const;

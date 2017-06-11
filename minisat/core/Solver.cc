@@ -513,6 +513,7 @@ CRef Solver::propagate()
         vec<Watcher>&  ws  = watches.lookup(p);
         Watcher        *i, *j, *end;
         num_props++;
+        applyPropagate();
 
         for (i = j = (Watcher*)ws, end = i + ws.size();  i != end;){
             // Try to avoid inspecting the clause:
@@ -706,12 +707,14 @@ lbool Solver::search(int nof_conflicts)
     int         conflictC = 0;
     vec<Lit>    learnt_clause;
     starts++;
+    applyRestart();
 
     for (;;){
         CRef confl = propagate();
         if (confl != CRef_Undef){
             // CONFLICT
             conflicts++; conflictC++;
+            applyConflict();
             if (decisionLevel() == 0) return l_False;
 
             learnt_clause.clear();
@@ -778,6 +781,7 @@ lbool Solver::search(int nof_conflicts)
             if (next == lit_Undef){
                 // New variable decision:
                 decisions++;
+                applyDecide();
                 next = pickBranchLit();
 
                 if (next == lit_Undef)
@@ -1057,7 +1061,7 @@ void Solver::applyBacktrack() const
     }
 }
 
-void Solver::applyCapplyflict() const
+void Solver::applyConflict() const
 {
     for(int i=0; i<listeners.size(); i++){
         listeners[i]->onConflict(vec<Lit, int>());
