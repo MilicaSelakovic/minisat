@@ -1005,7 +1005,6 @@ void Solver::printStats() const
 //=================================================================================================
 // Solver listeners methods:
 
-
 void Solver::addListener(SolverListener* listener)
 {
     listeners.push(listener);
@@ -1023,6 +1022,83 @@ void Solver::removeListener(SolverListener* listener)
         }
     }
 }
+
+
+//=================================================================================================
+// Solver listeners methods:
+
+// TODO: stavi parametre za ove on metode kako treva kad budes znao kako treba!
+
+void Solver::applyDecide() const
+{
+    for(int i=0; i<listeners.size(); i++){
+        listeners[i]->onDecide(lit_Undef);
+    }
+}
+
+void Solver::applyAssert() const
+{
+    for(int i=0; i<listeners.size(); i++){
+        listeners[i]->onAssert(lit_Undef);
+    }
+}
+
+void Solver::applyPropagate() const
+{
+    for(int i=0; i<listeners.size(); i++){
+        listeners[i]->onPropagate(lit_Undef, vec<Lit, int>());
+    }
+}
+
+void Solver::applyBacktrack() const
+{
+    for(int i=0; i<listeners.size(); i++){
+        listeners[i]->onBacktrack(lit_Undef);
+    }
+}
+
+void Solver::applyCapplyflict() const
+{
+    for(int i=0; i<listeners.size(); i++){
+        listeners[i]->onConflict(vec<Lit, int>());
+    }
+}
+
+void Solver::applyExplain() const
+{
+    for(int i=0; i<listeners.size(); i++){
+        listeners[i]->onExplain(lit_Undef, vec<Lit, int>());
+    }
+}
+
+void Solver::applyLearn() const
+{
+    for(int i=0; i<listeners.size(); i++){
+        listeners[i]->onLearn(vec<Lit, int>());
+    }
+}
+
+void Solver::applyForget() const
+{
+    for(int i=0; i<listeners.size(); i++){
+        listeners[i]->onForget();
+    }
+}
+
+void Solver::applyForgetClause() const
+{
+    for(int i=0; i<listeners.size(); i++){
+        listeners[i]->onForgetClause(vec<Lit, int>());
+    }
+}
+
+void Solver::applyRestart() const
+{
+    for(int i=0; i<listeners.size(); i++){
+        listeners[i]->onRestart();
+    }
+}
+
 
 //=================================================================================================
 // Garbage Collection methods:

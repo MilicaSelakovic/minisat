@@ -124,6 +124,19 @@ public:
     void removeListener (SolverListener* listener);
     vec<SolverListener*> listeners;
 
+    // Solver events:
+    //
+    void applyDecide        () const;
+    void applyAssert        () const;
+    void applyPropagate     () const;
+    void applyBacktrack     () const;
+    void applyCapplyflict   () const;
+    void applyExplain       () const;
+    void applyLearn         () const;
+    void applyForget        () const;
+    void applyForgetClause  () const;
+    void applyRestart       () const;
+
     // Extra results: (read-only member variable)
     //
     vec<lbool> model;             // If problem is satisfiable, this vector contains the model (if any).
