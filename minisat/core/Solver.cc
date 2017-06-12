@@ -785,8 +785,9 @@ lbool Solver::search(int nof_conflicts)
             if (next == lit_Undef){
                 // New variable decision:
                 decisions++;
-                applyDecide();
+
                 next = pickBranchLit();
+                applyDecide(next);
 
                 if (next == lit_Undef)
                     // Model found:
@@ -1037,10 +1038,10 @@ void Solver::removeListener(SolverListener* listener)
 
 // TODO: stavi parametre za ove on metode kako treva kad budes znao kako treba!
 
-void Solver::applyDecide() const
+void Solver::applyDecide(Lit l) const
 {
     for(int i=0; i<listeners.size(); i++){
-        listeners[i]->onDecide(lit_Undef);
+        listeners[i]->onDecide(l);
     }
 }
 

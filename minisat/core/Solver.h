@@ -127,7 +127,7 @@ public:
 
     // Solver events:
     //
-    void applyDecide        () const;
+    void applyDecide(Lit l) const;
     void applyAssert        () const;
     void applyPropagate     () const;
     void applyBacktrack     () const;
