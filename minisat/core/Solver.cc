@@ -249,6 +249,7 @@ void Solver::cancelUntil(int level) {
 //=================================================================================================
 // Major methods:
 
+// TODO ovo ide u heuristiku
 
 Lit Solver::pickBranchLit()
 {
@@ -788,6 +789,7 @@ lbool Solver::search(int nof_conflicts)
 
                 next = pickBranchLit();
                 applyDecide(next);
+                applyAssert(next);
 
                 if (next == lit_Undef)
                     // Model found:
@@ -1045,10 +1047,10 @@ void Solver::applyDecide(Lit l) const
     }
 }
 
-void Solver::applyAssert() const
+void Solver::applyAssert(Lit l) const
 {
     for(int i=0; i<listeners.size(); i++){
-        listeners[i]->onAssert(lit_Undef);
+        listeners[i]->onAssert(l);
     }
 }
 
