@@ -20,7 +20,7 @@ public:
         _numberOfDecisions++;
     }
 
-    virtual void onConflict(const vec<Lit>& conflictClause) {
+    virtual void onConflict(const Clause* conflictClause) {
         _numberOfConflicts++;
     }
 
@@ -29,7 +29,7 @@ public:
 //        printStatistics();
     }
 
-    virtual void onPropagate(Lit l, const vec<Lit>& clause) {
+    virtual void onPropagate(Lit l, const Clause* clause) {
         _numberOfPropagations++;
     }
 

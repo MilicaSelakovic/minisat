@@ -518,7 +518,7 @@ CRef Solver::propagate()
         vec<Watcher>&  ws  = watches.lookup(p);
         Watcher        *i, *j, *end;
         num_props++;
-        applyPropagate();
+        applyPropagate(p);
 
         for (i = j = (Watcher*)ws, end = i + ws.size();  i != end;){
             // Try to avoid inspecting the clause:
@@ -719,7 +719,7 @@ lbool Solver::search(int nof_conflicts)
         if (confl != CRef_Undef){
             // CONFLICT
             conflicts++; conflictC++;
-            applyConflict();
+            applyConflict(confl);
             if (decisionLevel() == 0) return l_False;
 
             learnt_clause.clear();
@@ -1054,10 +1054,11 @@ void Solver::applyAssert(Lit l) const
     }
 }
 
-void Solver::applyPropagate() const
+void Solver::applyPropagate(Lit l) const
 {
+    const Clause* reason = vardata[var(l)].reason != CRef_Undef? &ca[vardata[var(l)].reason] : NULL;
     for(int i=0; i<listeners.size(); i++){
-        listeners[i]->onPropagate(lit_Undef, vec<Lit, int>());
+        listeners[i]->onPropagate(l, reason);
     }
 }
 
@@ -1068,24 +1069,25 @@ void Solver::applyBacktrack() const
     }
 }
 
-void Solver::applyConflict() const
+void Solver::applyConflict(CRef conf) const
 {
+    assert(conf != CRef_Undef);
     for(int i=0; i<listeners.size(); i++){
-        listeners[i]->onConflict(vec<Lit, int>());
+        listeners[i]->onConflict(&ca[conf]);
     }
 }
 
 void Solver::applyExplain() const
 {
     for(int i=0; i<listeners.size(); i++){
-        listeners[i]->onExplain(lit_Undef, vec<Lit, int>());
+        listeners[i]->onExplain(lit_Undef, 0);
     }
 }
 
 void Solver::applyLearn() const
 {
     for(int i=0; i<listeners.size(); i++){
-        listeners[i]->onLearn(vec<Lit, int>());
+        listeners[i]->onLearn(0);
     }
 }
 
@@ -1099,7 +1101,7 @@ void Solver::applyForget() const
 void Solver::applyForgetClause() const
 {
     for(int i=0; i<listeners.size(); i++){
-        listeners[i]->onForgetClause(vec<Lit, int>());
+        listeners[i]->onForgetClause(0);
     }
 }
 

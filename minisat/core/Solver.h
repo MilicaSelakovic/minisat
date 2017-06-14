@@ -127,11 +127,11 @@ public:
 
     // Solver events:
     //
-    void applyDecide(Lit l) const;
-    void applyAssert(Lit l) const;
-    void applyPropagate     () const;
+    void applyDecide        (Lit l) const;
+    void applyAssert        (Lit l) const;
+    void applyPropagate     (Lit l) const;
     void applyBacktrack     () const;
-    void applyConflict      () const;
+    void applyConflict      (CRef conf) const;
     void applyExplain       () const;
     void applyLearn         () const;
     void applyForget        () const;
