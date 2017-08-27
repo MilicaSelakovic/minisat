@@ -7,25 +7,32 @@
 
 #include "minisat/core/SolverListener.h"
 
-class Solver;
 
 namespace Minisat {
 
+class Solver;
 
 class RestartStrategy : public SolverListener{
 public:
     RestartStrategy(Solver& solver, bool luby_restart, double restart_inc, int restart_first);
+    ~RestartStrategy();
 
     bool ShouldRestart();
 
-    virtual void onConflict(const Clause* conflictClause);
-    virtual void onRestart();
+    virtual void onConflict (const Clause* conflictClause);
+    virtual void onRestart  ();
 
 private:
     Solver& _solver;
     bool luby_restart;
     double restart_inc;
     int restart_first;
+
+    int curr_restarts;
+    int conflictC;
+    int nof_conflicts;
+
+    void updateNofConflicts();
 };
 
 }
