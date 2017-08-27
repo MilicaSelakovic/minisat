@@ -48,7 +48,8 @@ set(MINISAT_LIB_SOURCES
     minisat/utils/System.cc
     minisat/core/Solver.cc
     minisat/simp/SimpSolver.cc
-    minisat/core/SolverStatistics.cc)
+    minisat/core/SolverStatistics.cc
+    minisat/core/RestartStrategy.cc)
 
 add_library(minisat-lib-static STATIC ${MINISAT_LIB_SOURCES})
 add_library(minisat-lib-shared SHARED ${MINISAT_LIB_SOURCES})
