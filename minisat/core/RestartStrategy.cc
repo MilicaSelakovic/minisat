@@ -33,7 +33,6 @@ namespace Minisat {
         ,curr_restarts(-1)
         ,conflictC(0) {
         _solver.addListener(this);
-        updateNofConflicts();
     }
 
     RestartStrategy::~RestartStrategy() {
@@ -50,6 +49,7 @@ namespace Minisat {
 
     void RestartStrategy::onRestart(){
         curr_restarts++;
+        conflictC = 0;
         updateNofConflicts();
     }
 

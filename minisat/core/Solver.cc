@@ -60,15 +60,13 @@ Solver::Solver() :
   , clause_decay     (opt_clause_decay)
   , random_var_freq  (opt_random_var_freq)
   , random_seed      (opt_random_seed)
-  , luby_restart     (opt_luby_restart)
   , ccmin_mode       (opt_ccmin_mode)
   , phase_saving     (opt_phase_saving)
   , rnd_pol          (false)
   , rnd_init_act     (opt_rnd_init_act)
   , garbage_frac     (opt_garbage_frac)
   , min_learnts_lim  (opt_min_learnts_lim)
-  , restart_first    (opt_restart_first)
-  , restart_inc      (opt_restart_inc)
+  , restart_str      (new RestartStrategy(*this, opt_luby_restart, opt_restart_inc, opt_restart_first))
 
     // Parameters (the rest):
     //
@@ -705,11 +703,10 @@ bool Solver::simplify()
 |    all variables are decision variables, this means that the clause set is satisfiable. 'l_False'
 |    if the clause set is unsatisfiable. 'l_Undef' if the bound on number of conflicts is reached.
 |________________________________________________________________________________________________@*/
-lbool Solver::search(int nof_conflicts)
+lbool Solver::search()
 {
     assert(ok);
     int         backtrack_level;
-    int         conflictC = 0;
     vec<Lit>    learnt_clause;
     starts++;
     applyRestart();
@@ -718,7 +715,7 @@ lbool Solver::search(int nof_conflicts)
         CRef confl = propagate();
         if (confl != CRef_Undef){
             // CONFLICT
-            conflicts++; conflictC++;
+            conflicts++;
             applyConflict(confl);
             if (decisionLevel() == 0) return l_False;
 
@@ -753,7 +750,7 @@ lbool Solver::search(int nof_conflicts)
 
         }else{
             // NO CONFLICT
-            if ((nof_conflicts >= 0 && conflictC >= nof_conflicts) || !withinBudget()){
+            if (restart_str->ShouldRestart() || !withinBudget()){
                 // Reached bound on number of conflicts:
                 progress_estimate = progressEstimate();
                 cancelUntil(0);
@@ -830,22 +827,6 @@ double Solver::progressEstimate() const
 
  */
 
-static double luby(double y, int x){
-
-    // Find the finite subsequence that contains index 'x', and the
-    // size of that subsequence:
-    int size, seq;
-    for (size = 1, seq = 0; size < x+1; seq++, size = 2*size+1);
-
-    while (size-1 != x){
-        size = (size-1)>>1;
-        seq--;
-        x = x % size;
-    }
-
-    return pow(y, seq);
-}
-
 // NOTE: assumptions passed in member-variable 'assumptions'.
 lbool Solver::solve_()
 {
@@ -871,12 +852,9 @@ lbool Solver::solve_()
     }
 
     // Search:
-    int curr_restarts = 0;
     while (status == l_Undef){
-        double rest_base = luby_restart ? luby(restart_inc, curr_restarts) : pow(restart_inc, curr_restarts);
-        status = search(rest_base * restart_first);
+        status = search();
         if (!withinBudget()) break;
-        curr_restarts++;
     }
 
     if (verbosity >= 1)

@@ -29,6 +29,7 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #include "minisat/core/SolverTypes.h"
 #include "minisat/core/SolverListener.h"
 #include "minisat/core/SolverStatistics.h"
+#include "minisat/core/RestartStrategy.h"
 
 
 namespace Minisat {
@@ -142,6 +143,8 @@ public:
     //
     SolverStatistics* statistics;
 
+    RestartStrategy* restart_str;
+
     // Extra results: (read-only member variable)
     //
     vec<lbool> model;             // If problem is satisfiable, this vector contains the model (if any).
@@ -155,7 +158,6 @@ public:
     double    clause_decay;
     double    random_var_freq;
     double    random_seed;
-    bool      luby_restart;
     int       ccmin_mode;         // Controls conflict clause minimization (0=none, 1=basic, 2=deep).
     int       phase_saving;       // Controls the level of phase saving (0=none, 1=limited, 2=full).
     bool      rnd_pol;            // Use random polarities for branching heuristics.
@@ -163,8 +165,6 @@ public:
     double    garbage_frac;       // The fraction of wasted memory allowed before a garbage collection is triggered.
     int       min_learnts_lim;    // Minimum number to set the learnts limit to.
 
-    int       restart_first;      // The initial restart limit.                                                                (default 100)
-    double    restart_inc;        // The factor with which the restart limit is multiplied in each restart.                    (default 1.5)
     double    learntsize_factor;  // The intitial limit for learnt clauses is a factor of the original clauses.                (default 1 / 3)
     double    learntsize_inc;     // The limit for learnt clauses is multiplied with this factor each restart.                 (default 1.1)
 
@@ -273,7 +273,7 @@ protected:
     void     analyze          (CRef confl, vec<Lit>& out_learnt, int& out_btlevel);    // (bt = backtrack)
     void     analyzeFinal     (Lit p, LSet& out_conflict);                             // COULD THIS BE IMPLEMENTED BY THE ORDINARIY "analyze" BY SOME REASONABLE GENERALIZATION?
     bool     litRedundant     (Lit p);                                                 // (helper method for 'analyze()')
-    lbool    search           (int nof_conflicts);                                     // Search for a given number of conflicts.
+    lbool    search           ();                                                      // Search for a given number of conflicts.
     lbool    solve_           ();                                                      // Main solve method (assumptions given in 'assumptions').
     void     reduceDB         ();                                                      // Reduce the set of learnt clauses.
     void     removeSatisfied  (vec<CRef>& cs);                                         // Shrink 'cs' to contain only non-satisfied clauses.
