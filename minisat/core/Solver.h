@@ -30,6 +30,7 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #include "minisat/core/SolverListener.h"
 #include "minisat/core/SolverStatistics.h"
 #include "minisat/core/RestartStrategy.h"
+#include "minisat/core/ForgetStrategy.h"
 
 
 namespace Minisat {
@@ -144,6 +145,8 @@ public:
     SolverStatistics* statistics;
 
     RestartStrategy* restart_str;
+
+    ForgetStrategy* forget_str;
 
     // Extra results: (read-only member variable)
     //
@@ -275,7 +278,7 @@ protected:
     bool     litRedundant     (Lit p);                                                 // (helper method for 'analyze()')
     lbool    search           ();                                                      // Search for a given number of conflicts.
     lbool    solve_           ();                                                      // Main solve method (assumptions given in 'assumptions').
-    void     reduceDB         ();                                                      // Reduce the set of learnt clauses.
+    void     forget();                                                            // Reduce the set of learnt clauses.
     void     removeSatisfied  (vec<CRef>& cs);                                         // Shrink 'cs' to contain only non-satisfied clauses.
     void     rebuildOrderHeap ();
 

@@ -67,7 +67,6 @@ Solver::Solver() :
   , garbage_frac     (opt_garbage_frac)
   , min_learnts_lim  (opt_min_learnts_lim)
   , restart_str      (new RestartStrategy(*this, opt_luby_restart, opt_restart_inc, opt_restart_first))
-
     // Parameters (the rest):
     //
   , learntsize_factor((double)1/(double)3), learntsize_inc(1.1)
@@ -103,6 +102,7 @@ Solver::Solver() :
     // Resource constraints:
     //
   , statistics         (new SolverStatistics(*this))
+  , forget_str         (new ForgetStrategy(*this))
 {}
 
 
@@ -570,7 +570,7 @@ CRef Solver::propagate()
 
 /*_________________________________________________________________________________________________
 |
-|  reduceDB : ()  ->  [void]
+|  forget : ()  ->  [void]
 |  
 |  Description:
 |    Remove half of the learnt clauses, minus the clauses locked by the current assignment. Locked
@@ -582,7 +582,7 @@ struct reduceDB_lt {
     bool operator () (CRef x, CRef y) { 
         return ca[x].size() > 2 && (ca[y].size() == 2 || ca[x].activity() < ca[y].activity()); } 
 };
-void Solver::reduceDB()
+void Solver::forget()
 {
     int     i, j;
     double  extra_lim = cla_inc / learnts.size();    // Remove any clause below this activity
@@ -736,6 +736,7 @@ lbool Solver::search()
             varDecayActivity();
             claDecayActivity();
 
+            applyLearn();
             if (--learntsize_adjust_cnt == 0){
                 learntsize_adjust_confl *= learntsize_adjust_inc;
                 learntsize_adjust_cnt    = (int)learntsize_adjust_confl;
@@ -760,9 +761,12 @@ lbool Solver::search()
             if (decisionLevel() == 0 && !simplify())
                 return l_False;
 
-            if (learnts.size()-nAssigns() >= max_learnts)
+            // zaboravljanje
+            if (forget_str->shouldForget(learnts.size()-nAssigns())) {
                 // Reduce the set of learnt clauses:
-                reduceDB();
+                applyForget();
+                forget();
+            }
 
             Lit next = lit_Undef;
             while (decisionLevel() < assumptions.size()){
@@ -836,6 +840,8 @@ lbool Solver::solve_()
 
     solves++;
 
+    // TODO ovo je prebaceno u Forget, ali je ostalo ovde zbog ispisa pri ucenju
+    forget_str->init(nClauses());
     max_learnts = nClauses() * learntsize_factor;
     if (max_learnts < min_learnts_lim)
         max_learnts = min_learnts_lim;
