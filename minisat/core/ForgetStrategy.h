@@ -15,7 +15,7 @@ namespace Minisat {
 
     class ForgetStrategy : public SolverListener{
     public:
-        ForgetStrategy(Solver& solver);
+        ForgetStrategy(Solver& solver, int opt_min_learnts_lim);
         ~ForgetStrategy();
 
         virtual void onLearn(const Clause* clause);
@@ -24,8 +24,12 @@ namespace Minisat {
 
         void init(int num_clauses);
 
+        bool shouldWrite();
+
+        double getMax_learnts() const;
+
     private:
-        Solver& _solver;
+        Solver&   _solver;
         int       min_learnts_lim;    // Minimum number to set the learnts limit to.
 
         double    learntsize_factor;  // The intitial limit for learnt clauses is a factor of the original clauses.                (default 1 / 3)
@@ -35,9 +39,11 @@ namespace Minisat {
         double    learntsize_adjust_inc;
 
         // states
-        double              max_learnts;
-        double              learntsize_adjust_confl;
-        int                 learntsize_adjust_cnt;
+        double    max_learnts;
+        double    learntsize_adjust_confl;
+        int       learntsize_adjust_cnt;
+
+        bool      write;
 
     };
 

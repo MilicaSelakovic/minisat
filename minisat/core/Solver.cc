@@ -65,16 +65,7 @@ Solver::Solver() :
   , rnd_pol          (false)
   , rnd_init_act     (opt_rnd_init_act)
   , garbage_frac     (opt_garbage_frac)
-  , min_learnts_lim  (opt_min_learnts_lim)
   , restart_str      (new RestartStrategy(*this, opt_luby_restart, opt_restart_inc, opt_restart_first))
-    // Parameters (the rest):
-    //
-  , learntsize_factor((double)1/(double)3), learntsize_inc(1.1)
-
-    // Parameters (experimental):
-    //
-  , learntsize_adjust_start_confl (100)
-  , learntsize_adjust_inc         (1.5)
 
     // Statistics: (formerly in 'SolverStats')
     //
@@ -102,7 +93,7 @@ Solver::Solver() :
     // Resource constraints:
     //
   , statistics         (new SolverStatistics(*this))
-  , forget_str         (new ForgetStrategy(*this))
+  , forget_str         (new ForgetStrategy(*this, opt_min_learnts_lim))
 {}
 
 
@@ -737,16 +728,13 @@ lbool Solver::search()
             claDecayActivity();
 
             applyLearn();
-            if (--learntsize_adjust_cnt == 0){
-                learntsize_adjust_confl *= learntsize_adjust_inc;
-                learntsize_adjust_cnt    = (int)learntsize_adjust_confl;
-                max_learnts             *= learntsize_inc;
 
+            if(forget_str->shouldWrite()){
                 if (verbosity >= 1)
                     printf("| %9d | %7d %8d %8d | %8d %8d %6.0f | %6.3f %% |\n", 
                            (int)conflicts, 
                            (int)dec_vars - (trail_lim.size() == 0 ? trail.size() : trail_lim[0]), nClauses(), (int)clauses_literals, 
-                           (int)max_learnts, nLearnts(), (double)learnts_literals/nLearnts(), progressEstimate()*100);
+                           (int)forget_str->getMax_learnts(), nLearnts(), (double)learnts_literals/nLearnts(), progressEstimate()*100);
             }
 
         }else{
@@ -842,12 +830,6 @@ lbool Solver::solve_()
 
     // TODO ovo je prebaceno u Forget, ali je ostalo ovde zbog ispisa pri ucenju
     forget_str->init(nClauses());
-    max_learnts = nClauses() * learntsize_factor;
-    if (max_learnts < min_learnts_lim)
-        max_learnts = min_learnts_lim;
-
-    learntsize_adjust_confl   = learntsize_adjust_start_confl;
-    learntsize_adjust_cnt     = (int)learntsize_adjust_confl;
     lbool   status            = l_Undef;
 
     if (verbosity >= 1){

@@ -8,12 +8,14 @@
 
 namespace Minisat {
 
-    ForgetStrategy::ForgetStrategy(Solver &solver)
+    ForgetStrategy::ForgetStrategy(Solver &solver, int opt_min_learnts_lim)
             : _solver(solver)
+            , min_learnts_lim(opt_min_learnts_lim)
             , learntsize_factor((double)1/(double)3)
             , learntsize_inc(1.1)
             , learntsize_adjust_start_confl (100)
             , learntsize_adjust_inc         (1.5)
+            , write (false)
     {
         _solver.addListener(this);
     }
@@ -27,7 +29,9 @@ namespace Minisat {
             learntsize_adjust_confl *= learntsize_adjust_inc;
             learntsize_adjust_cnt = (int) learntsize_adjust_confl;
             max_learnts *= learntsize_inc;
-
+            write = true;
+        } else{
+            write = false;
         }
     }
 
@@ -43,5 +47,13 @@ namespace Minisat {
         learntsize_adjust_confl   = learntsize_adjust_start_confl;
         learntsize_adjust_cnt     = (int)learntsize_adjust_confl;
 
+    }
+
+    bool ForgetStrategy::shouldWrite() {
+        return write;
+    }
+
+    double ForgetStrategy::getMax_learnts() const {
+        return max_learnts;
     }
 }

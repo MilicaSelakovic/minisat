@@ -166,13 +166,6 @@ public:
     bool      rnd_pol;            // Use random polarities for branching heuristics.
     bool      rnd_init_act;       // Initialize variable activities with a small random value.
     double    garbage_frac;       // The fraction of wasted memory allowed before a garbage collection is triggered.
-    int       min_learnts_lim;    // Minimum number to set the learnts limit to.
-
-    double    learntsize_factor;  // The intitial limit for learnt clauses is a factor of the original clauses.                (default 1 / 3)
-    double    learntsize_inc;     // The limit for learnt clauses is multiplied with this factor each restart.                 (default 1.1)
-
-    int       learntsize_adjust_start_confl;
-    double    learntsize_adjust_inc;
 
     // Statistics: (read-only member variable)
     //
@@ -254,9 +247,6 @@ protected:
     vec<Lit>            analyze_toclear;
     vec<Lit>            add_tmp;
 
-    double              max_learnts;
-    double              learntsize_adjust_confl;
-    int                 learntsize_adjust_cnt;
 
     // Resource contraints:
     //
