@@ -828,7 +828,6 @@ lbool Solver::solve_()
 
     solves++;
 
-    // TODO ovo je prebaceno u Forget, ali je ostalo ovde zbog ispisa pri ucenju
     forget_str->init(nClauses());
     lbool   status            = l_Undef;
 
