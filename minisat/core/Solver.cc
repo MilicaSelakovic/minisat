@@ -224,6 +224,8 @@ bool Solver::satisfied(const Clause& c) const {
 void Solver::cancelUntil(int level) {
     if (decisionLevel() > level){
         for (int c = trail.size()-1; c >= trail_lim[level]; c--){
+            applyBacktrack(trail[c]);
+
             Var      x  = var(trail[c]);
             assigns [x] = l_Undef;
             if (phase_saving > 1 || (phase_saving == 1 && c > trail_lim.last()))
@@ -1027,10 +1029,10 @@ void Solver::applyPropagate(Lit l) const
     }
 }
 
-void Solver::applyBacktrack() const
+void Solver::applyBacktrack(Lit l) const
 {
     for(int i=0; i<listeners.size(); i++){
-        listeners[i]->onBacktrack(lit_Undef);
+        listeners[i]->onBacktrack(l);
     }
 }
 
