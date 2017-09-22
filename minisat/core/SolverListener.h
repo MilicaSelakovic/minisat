@@ -18,7 +18,7 @@ public:
     virtual void onDecide        (Lit l)                          {}
     virtual void onAssert        (Lit l)                          {}
     virtual void onPropagate     (Lit l, const Clause* clause)    {}
-    virtual void onBacktrack     (Lit l)                          {} // Event never fires
+    virtual void onBacktrack     (Lit l, bool end_of_level)       {}
     virtual void onConflict      (const Clause* conflictClause)   {}
     virtual void onExplain       (Lit l, const Clause* clause)    {} // Event never fires
     virtual void onLearn         (const Clause* clause)           {} // Event never fires

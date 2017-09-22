@@ -132,7 +132,7 @@ public:
     void applyDecide        (Lit l) const;
     void applyAssert        (Lit l) const;
     void applyPropagate     (Lit l) const;
-    void applyBacktrack     (Lit l) const;
+    void applyBacktrack     (Lit l, bool end_of_level) const;
     void applyConflict      (CRef conf) const;
     void applyExplain       () const;
     void applyLearn         () const;
