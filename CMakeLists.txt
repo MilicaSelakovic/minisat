@@ -50,7 +50,10 @@ set(MINISAT_LIB_SOURCES
     minisat/simp/SimpSolver.cc
     minisat/core/SolverStatistics.cc
     minisat/core/RestartStrategy.cc
-    minisat/core/ForgetStrategy.cc)
+    minisat/core/ForgetStrategy.cc
+    minisat/core/PolarityStrategyLimited.cc
+    minisat/core/PolarityStrategyFull.cc
+    minisat/core/PolarityStrategyNone.cc)
 
 add_library(minisat-lib-static STATIC ${MINISAT_LIB_SOURCES})
 add_library(minisat-lib-shared SHARED ${MINISAT_LIB_SOURCES})

@@ -31,6 +31,7 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #include "minisat/core/SolverStatistics.h"
 #include "minisat/core/RestartStrategy.h"
 #include "minisat/core/ForgetStrategy.h"
+#include "minisat/core/PolarityStrategy.h"
 
 
 namespace Minisat {
@@ -148,6 +149,8 @@ public:
 
     ForgetStrategy* forget_str;
 
+    PolarityStrategy* polarity_str;
+
     // Extra results: (read-only member variable)
     //
     vec<lbool> model;             // If problem is satisfiable, this vector contains the model (if any).
@@ -216,7 +219,6 @@ protected:
 
     VMap<double>        activity;         // A heuristic measurement of the activity of a variable.
     VMap<lbool>         assigns;          // The current assignments.
-    VMap<char>          polarity;         // The preferred polarity of each variable.
     VMap<lbool>         user_pol;         // The users preferred polarity of each variable.
     VMap<char>          decision;         // Declares if a variable is eligible for selection in the decision heuristic.
     VMap<VarData>       vardata;          // Stores reason and level for each variable.

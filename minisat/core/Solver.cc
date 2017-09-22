@@ -24,6 +24,9 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #include "minisat/mtl/Sort.h"
 #include "minisat/utils/System.h"
 #include "minisat/core/Solver.h"
+#include "minisat/core/PolarityStrategyFull.h"
+#include "minisat/core/PolarityStrategyLimited.h"
+#include "minisat/core/PolarityStrategyNone.h"
 
 using namespace Minisat;
 
@@ -61,7 +64,6 @@ Solver::Solver() :
   , random_var_freq  (opt_random_var_freq)
   , random_seed      (opt_random_seed)
   , ccmin_mode       (opt_ccmin_mode)
-  , phase_saving     (opt_phase_saving)
   , rnd_pol          (false)
   , rnd_init_act     (opt_rnd_init_act)
   , garbage_frac     (opt_garbage_frac)
@@ -94,6 +96,9 @@ Solver::Solver() :
     //
   , statistics         (new SolverStatistics(*this))
   , forget_str         (new ForgetStrategy(*this, opt_min_learnts_lim))
+  , polarity_str       (opt_phase_saving == 0? (PolarityStrategy*)new PolarityStrategyNone(*this)
+                                             : opt_phase_saving == 1? (PolarityStrategy*)new PolarityStrategyLimited(*this)
+                                                                    : (PolarityStrategy*)new PolarityStrategyFull(*this))
 {}
 
 
@@ -124,7 +129,6 @@ Var Solver::newVar(lbool upol, bool dvar)
     vardata  .insert(v, mkVarData(CRef_Undef, 0));
     activity .insert(v, rnd_init_act ? drand(random_seed) * 0.00001 : 0);
     seen     .insert(v, 0);
-    polarity .insert(v, true);
     user_pol .insert(v, upol);
     decision .reserve(v);
     trail    .capacity(v+1);
@@ -234,8 +238,6 @@ void Solver::cancelUntil(int level) {
 
             Var      x  = var(trail[c]);
             assigns [x] = l_Undef;
-            if (phase_saving > 1 || (phase_saving == 1 && c > trail_lim.last()))
-                polarity[x] = sign(trail[c]);
             insertVarOrder(x); }
         qhead = trail_lim[level];
         trail.shrink(trail.size() - trail_lim[level]);
@@ -274,7 +276,7 @@ Lit Solver::pickBranchLit()
     else if (rnd_pol)
         return mkLit(next, drand(random_seed) < 0.5);
     else
-        return mkLit(next, polarity[next]);
+        return mkLit(next, polarity_str->GetPolarity(next));
 }
 
 
