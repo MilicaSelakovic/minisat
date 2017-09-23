@@ -40,9 +40,9 @@ namespace Minisat {
 
     protected:
         struct VarOrderLt {
-            const IntMap<Var, double>&  activity;
+            const VMap<double>&  activity;
             bool operator () (Var x, Var y) const { return activity[x] > activity[y]; }
-            VarOrderLt(const IntMap<Var, double>&  act) : activity(act) { }
+            VarOrderLt(const VMap<double>&  act) : activity(act) { }
         };
 
     private:
