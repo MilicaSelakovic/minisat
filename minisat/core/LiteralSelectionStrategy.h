@@ -19,7 +19,7 @@ namespace Minisat {
 
     class LiteralSelectionStrategy: public SolverListener{
     public:
-        LiteralSelectionStrategy(Solver& solver, double opt_random_var_freq, double opt_random_seed,
+        LiteralSelectionStrategy(Solver& solver, double opt_random_var_freq,
                                  bool opt_rnd_init_act, double opt_var_decay);
         ~LiteralSelectionStrategy();
 
@@ -49,20 +49,16 @@ namespace Minisat {
 
     private:
         Solver&   _solver;
-        double    random_var_freq; // i ovo ide iz solvera
-        double    random_seed;
-        uint64_t rnd_decisions; //ide iz solvera pokazuje samo koliko puta je na random izabrao
+        double    random_var_freq;
+        uint64_t rnd_decisions;
         uint64_t dec_vars;
-        bool      rnd_init_act;       // Initialize variable activities with a small random value. ide van solvera
-        VMap<double>        activity;      // A heuristic measurement of the activity of a variable.
-        Heap<Var,VarOrderLt>order_heap;  // i ovo ide iz solvera
-        VMap<char>          decision;         // Declares if a variable is eligible for selection in the decision heuristic. i ovo
+        bool      rnd_init_act;
+        VMap<double>        activity;
+        Heap<Var,VarOrderLt>order_heap;
+        VMap<char>          decision;
 
-        double              var_inc;          // Amount to bump next variable with.
+        double              var_inc;
         double    var_decay;
-
-        double drand(double& seed);
-        int irand(double& seed, int size);
 
         void setDecisionVar(Var v, bool b);
     };

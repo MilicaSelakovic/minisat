@@ -5,15 +5,14 @@
 #include "LiteralSelectionStrategy.h"
 
 #include "minisat/core/Solver.h"
+#include "minisat/core/Random.h"
 
 namespace Minisat {
 
     LiteralSelectionStrategy::LiteralSelectionStrategy(Solver &solver, double opt_random_var_freq,
-                                                       double opt_random_seed, bool opt_rnd_init_act,
-                                                       double opt_var_decay)
+                                                       bool opt_rnd_init_act, double opt_var_decay)
             : _solver(solver)
             , random_var_freq(opt_random_var_freq)
-            , random_seed(opt_random_seed)
             , rnd_init_act(opt_rnd_init_act)
             , rnd_decisions(0)
             , var_decay(opt_var_decay)
@@ -32,8 +31,8 @@ namespace Minisat {
         Var next = var_Undef;
 
         // Random decision:
-        if (drand(random_seed) < random_var_freq && !order_heap.empty()){
-            next = order_heap[irand(random_seed,order_heap.size())];
+        if (Random::getInstance()->drand() < random_var_freq && !order_heap.empty()){
+            next = order_heap[Random::getInstance()->irand(order_heap.size())];
             if (_solver.value(next) == l_Undef && decision[next])
                 rnd_decisions++; }
 
@@ -49,7 +48,7 @@ namespace Minisat {
     }
 
     void LiteralSelectionStrategy::onAddNewVar(Var v, bool dvar) {
-        activity.insert(v, rnd_init_act ? drand(random_seed) * 0.00001 : 0);
+        activity.insert(v, rnd_init_act ? Random::getInstance()->drand() * 0.00001 : 0);
         decision.reserve(v);
         setDecisionVar(v, dvar);
     }
@@ -73,17 +72,6 @@ namespace Minisat {
     void LiteralSelectionStrategy::onBacktrack(Lit l, bool end_of_level) {
         Var x = var(l);
         insertVarOrder(x);
-    }
-
-    double LiteralSelectionStrategy::drand(double& seed) {
-        seed *= 1389796;
-        int q = (int)(seed / 2147483647);
-        seed -= (double)q * 2147483647;
-        return seed / 2147483647;
-    }
-
-    int LiteralSelectionStrategy::irand(double& seed, int size) {
-        return (int)(drand(seed) * size);
     }
 
     void LiteralSelectionStrategy::rebuildHeap(){

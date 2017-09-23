@@ -47,6 +47,7 @@ set(MINISAT_LIB_SOURCES
     minisat/utils/Options.cc
     minisat/utils/System.cc
     minisat/core/Solver.cc
+    minisat/core/Random.cc
     minisat/simp/SimpSolver.cc
     minisat/core/SolverStatistics.cc
     minisat/core/RestartStrategy.cc
