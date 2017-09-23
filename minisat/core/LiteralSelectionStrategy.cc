@@ -95,7 +95,7 @@ namespace Minisat {
         else if (!b &&  decision[v]) dec_vars--;
 
         decision[v] = b;
-       //_solver.insertVarOrder(v);
+        insertVarOrder(v);
     }
 
 
