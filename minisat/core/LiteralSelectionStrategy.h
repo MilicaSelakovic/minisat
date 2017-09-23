@@ -30,6 +30,8 @@ namespace Minisat {
 
         void onExplain(Var v);
 
+        void onBacktrack(Lit l, bool end_of_level);
+
         void rebuildHeap();
 
         uint64_t  decVars();

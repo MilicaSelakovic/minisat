@@ -70,6 +70,11 @@ namespace Minisat {
             order_heap.decrease(v);
     }
 
+    void LiteralSelectionStrategy::onBacktrack(Lit l, bool end_of_level) {
+        Var x = var(l);
+        insertVarOrder(x);
+    }
+
     double LiteralSelectionStrategy::drand(double& seed) {
         seed *= 1389796;
         int q = (int)(seed / 2147483647);

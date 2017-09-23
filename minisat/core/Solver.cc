@@ -236,7 +236,7 @@ void Solver::cancelUntil(int level) {
 
             Var      x  = var(trail[c]);
             assigns [x] = l_Undef;
-            literalSelection_str->insertVarOrder(x); }
+            }
         qhead = trail_lim[level];
         trail.shrink(trail.size() - trail_lim[level]);
         trail_lim.shrink(trail_lim.size() - level);
