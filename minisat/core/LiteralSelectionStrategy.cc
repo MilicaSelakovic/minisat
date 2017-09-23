@@ -18,8 +18,8 @@ namespace Minisat {
             , rnd_decisions(0)
             , var_decay(opt_var_decay)
             , var_inc(1)
-            , order_heap(VarOrderLt(activity))
             , dec_vars(0)
+            , order_heap(VarOrderLt(activity))
     {
         _solver.addListener(this);
     }
