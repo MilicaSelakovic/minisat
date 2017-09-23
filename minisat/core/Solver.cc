@@ -133,6 +133,8 @@ Var Solver::newVar(lbool upol, bool dvar)
     decision .reserve(v);
     trail    .capacity(v+1);
     setDecisionVar(v, dvar);
+
+
     return v;
 }
 
@@ -1087,6 +1089,13 @@ void Solver::applyRestart() const
     }
 }
 
+
+void Solver::applyAddNewVar(Var v) const {
+{
+    for(int i=0; i<listeners.size(); i++){
+        listeners[i]->onRestart();
+    }
+}
 
 //=================================================================================================
 // Garbage Collection methods:

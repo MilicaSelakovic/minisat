@@ -140,6 +140,7 @@ public:
     void applyForget        () const;
     void applyForgetClause  () const;
     void applyRestart       () const;
+    void applyAddNewVar     (Var v) const;
 
     // Solver statistics:
     //

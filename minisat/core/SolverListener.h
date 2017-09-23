@@ -25,6 +25,7 @@ public:
     virtual void onForget        ()                               {} // Event never fires
     virtual void onForgetClause  (const Clause* clause)           {} // Event never fires
     virtual void onRestart       ()                               {}
+    virtual void onAddNewVar     (Var v)                          {}
 };
 
 }
