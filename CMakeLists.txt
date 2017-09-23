@@ -55,6 +55,7 @@ set(MINISAT_LIB_SOURCES
     minisat/core/PolarityStrategyLimited.cc
     minisat/core/PolarityStrategyFull.cc
     minisat/core/PolarityStrategyNone.cc
+    minisat/core/PolarityStrategyRandom.cc
     minisat/core/LiteralSelectionStrategy.cc)
 
 add_library(minisat-lib-static STATIC ${MINISAT_LIB_SOURCES})

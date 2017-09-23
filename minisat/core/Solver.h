@@ -143,18 +143,6 @@ public:
     void applyRestart       () const;
     void applyAddNewVar     (Var v, bool dvar) const;
 
-    // Solver statistics:
-    //
-    SolverStatistics* statistics;
-
-    RestartStrategy* restart_str;
-
-    ForgetStrategy* forget_str;
-
-    PolarityStrategy* polarity_str;
-
-    LiteralSelectionStrategy* literalSelection_str;
-
     // Extra results: (read-only member variable)
     //
     vec<lbool> model;             // If problem is satisfiable, this vector contains the model (if any).
@@ -178,6 +166,17 @@ public:
     uint64_t solves, starts, decisions, propagations, conflicts;
     uint64_t num_clauses, num_learnts, clauses_literals, learnts_literals, max_literals, tot_literals;
 
+    // Solver statistics:
+    //
+    SolverStatistics* statistics;
+
+    RestartStrategy* restart_str;
+
+    ForgetStrategy* forget_str;
+
+    PolarityStrategy* polarity_str;
+
+    LiteralSelectionStrategy* literalSelection_str;
 protected:
 
     // Helper structures:
