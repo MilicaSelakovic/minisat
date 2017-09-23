@@ -53,10 +53,11 @@ set(MINISAT_LIB_SOURCES
     minisat/core/ForgetStrategy.cc
     minisat/core/PolarityStrategyLimited.cc
     minisat/core/PolarityStrategyFull.cc
-    minisat/core/PolarityStrategyNone.cc)
+    minisat/core/PolarityStrategyNone.cc
+    minisat/core/LiteralSelectionStrategy.cc)
 
 add_library(minisat-lib-static STATIC ${MINISAT_LIB_SOURCES})
-add_library(minisat-lib-shared SHARED ${MINISAT_LIB_SOURCES} minisat/core/LiteralSelectionStrategy.cc minisat/core/LiteralSelectionStrategy.h)
+add_library(minisat-lib-shared SHARED ${MINISAT_LIB_SOURCES})
 
 target_link_libraries(minisat-lib-shared ${ZLIB_LIBRARY})
 target_link_libraries(minisat-lib-static ${ZLIB_LIBRARY})

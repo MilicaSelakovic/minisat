@@ -20,12 +20,12 @@ public:
     virtual void onPropagate     (Lit l, const Clause* clause)    {}
     virtual void onBacktrack     (Lit l, bool end_of_level)       {}
     virtual void onConflict      (const Clause* conflictClause)   {}
-    virtual void onExplain       (Lit l, const Clause* clause)    {} // Event never fires
-    virtual void onLearn         (const Clause* clause)           {} // Event never fires
+    virtual void onExplain       (Var q)                          {}
+    virtual void onLearn         (const Clause* clause)           {}
     virtual void onForget        ()                               {} // Event never fires
     virtual void onForgetClause  (const Clause* clause)           {} // Event never fires
     virtual void onRestart       ()                               {}
-    virtual void onAddNewVar     (Var v)                          {}
+    virtual void onAddNewVar     (Var v, bool dvar)               {}
 };
 
 }

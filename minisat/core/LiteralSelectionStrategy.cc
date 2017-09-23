@@ -9,13 +9,17 @@
 namespace Minisat {
 
     LiteralSelectionStrategy::LiteralSelectionStrategy(Solver &solver, double opt_random_var_freq,
-                                                       double opt_random_seed, bool opt_rnd_init_act)
+                                                       double opt_random_seed, bool opt_rnd_init_act,
+                                                       double opt_var_decay)
             : _solver(solver)
             , random_var_freq(opt_random_var_freq)
             , random_seed(opt_random_seed)
             , rnd_init_act(opt_rnd_init_act)
             , rnd_decisions(0)
-            , order_heap         (VarOrderLt(activity))
+            , var_decay(opt_var_decay)
+            , var_inc(1)
+            , order_heap(VarOrderLt(activity))
+            , dec_vars(0)
     {
         _solver.addListener(this);
     }
@@ -44,8 +48,26 @@ namespace Minisat {
         return next;
     }
 
-    void LiteralSelectionStrategy::onAddNewVar(Var v) {
+    void LiteralSelectionStrategy::onAddNewVar(Var v, bool dvar) {
         activity.insert(v, rnd_init_act ? drand(random_seed) * 0.00001 : 0);
+        decision.reserve(v);
+        setDecisionVar(v, dvar);
+    }
+
+    void LiteralSelectionStrategy::onLearn(const Clause* clause) {
+        var_inc *= (1 / var_decay);
+    }
+
+    void LiteralSelectionStrategy::onExplain(Var v) {
+        if ( (activity[v] += var_inc) > 1e100 ) {
+            // Rescale:
+            for (int i = 0; i < _solver.nVars(); i++)
+                activity[i] *= 1e-100;
+            var_inc *= 1e-100; }
+
+        // Update order_heap with respect to new activity:
+        if (order_heap.inHeap(v))
+            order_heap.decrease(v);
     }
 
     double LiteralSelectionStrategy::drand(double& seed) {
@@ -59,5 +81,33 @@ namespace Minisat {
         return (int)(drand(seed) * size);
     }
 
+    void LiteralSelectionStrategy::rebuildHeap(){
+        vec<Var> vs;
+        for (Var v = 0; v < _solver.nVars(); v++)
+            if (decision[v] && _solver.value(v) == l_Undef)
+                vs.push(v);
+        order_heap.build(vs);
+    }
+
+    void LiteralSelectionStrategy::setDecisionVar(Var v, bool b)
+    {
+        if      ( b && !decision[v]) dec_vars++;
+        else if (!b &&  decision[v]) dec_vars--;
+
+        decision[v] = b;
+       //_solver.insertVarOrder(v);
+    }
+
+
+    uint64_t  LiteralSelectionStrategy::decVars(){
+        return dec_vars;
+    }
+    uint64_t  LiteralSelectionStrategy::rndDecisions(){
+        return rnd_decisions;
+    }
+
+    void LiteralSelectionStrategy::insertVarOrder(Var x) {
+        if (!order_heap.inHeap(x) && decision[x]) order_heap.insert(x);
+    }
 
 }
