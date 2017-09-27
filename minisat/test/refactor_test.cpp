@@ -19,7 +19,7 @@ protected:
         Solver S;
         gzFile in = gzopen((samplesPath + fileName).c_str(), "rb");
         if(in == NULL){
-            FAIL() << "Error reading cnf file";
+            FAIL() << "Error reading cnf file" + (samplesPath + fileName);
         }
         parse_DIMACS(in, S);
 
@@ -59,6 +59,34 @@ protected:
 };
 
 TEST_F(RefactorTest, test1) {
-    testFromFile("unif-r4.25-v400-c1700-05-S1956245623.used-as.sat04-35.cnf");
+    testFromFile("test1.cnf");
+}
+
+TEST_F(RefactorTest, test2) {
+    testFromFile("test2.cnf");
+}
+
+TEST_F(RefactorTest, test3) {
+    testFromFile("test3.cnf");
+}
+
+TEST_F(RefactorTest, test4) {
+    testFromFile("test4.cnf");
+}
+
+TEST_F(RefactorTest, test5) {
+    testFromFile("test5.cnf");
+}
+
+TEST_F(RefactorTest, test6) {
+    testFromFile("test6.cnf");
+}
+
+TEST_F(RefactorTest, test7) {
+    testFromFile("test7.cnf");
+}
+
+TEST_F(RefactorTest, test8) {
+    testFromFile("test8.cnf");
 }
 
